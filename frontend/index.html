@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Donation Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>❤️ Donation Tracker</h1>
+  <a href="admin.html">Admin Panel →</a>
+</header>
+
+<div class="container">
+
+  <!-- Stats Section -->
+  <h2>📊 Live Dashboard</h2>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3 id="totalDonations">0</h3>
+      <p>Total Donations</p>
+    </div>
+    <div class="stat-card">
+      <h3 id="totalRaised">₹0</h3>
+      <p>Total Raised</p>
+    </div>
+    <div class="stat-card">
+      <h3 id="avgDonation">₹0</h3>
+      <p>Average Donation</p>
+    </div>
+  </div>
+
+  <!-- Campaigns -->
+  <h2>🎯 Campaigns — Click to Donate</h2>
+  <div class="campaigns-grid" id="campaignsGrid">
+    <p>Loading campaigns...</p>
+  </div>
+
+  <!-- Donation Form -->
+  <div class="donation-form" id="donationForm">
+    <h2>Donate to: <span id="selectedCampaignName"></span></h2>
+    <br/>
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" id="donorName" placeholder="Enter your name" />
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="donorEmail" placeholder="Enter your email" />
+    </div>
+    <div class="form-group">
+      <label>Donation Amount (₹)</label>
+      <input type="number" id="donorAmount" placeholder="Enter amount" min="1" />
+    </div>
+    <div id="formError" class="error"></div>
+    <div id="formSuccess" class="success-msg" style="display:none"></div>
+    <br/>
+    <button class="btn btn-primary" id="submitBtn" onclick="submitDonation()">
+      💝 Donate Now
+    </button>
+  </div>
+
+  <!-- Top Donors Leaderboard -->
+  <h2>🏆 Top Donors</h2>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Total Donated</th>
+        </tr>
+      </thead>
+      <tbody id="topDonorsTable">
+        <tr><td colspan="4">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Recent Donations -->
+  <h2>🕐 Recent Donations</h2>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Amount</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="recentDonationsTable">
+        <tr><td colspan="4">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

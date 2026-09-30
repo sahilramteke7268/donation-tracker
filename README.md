@@ -1,9 +1,11 @@
 # 💝 Donation Tracking System
 
-A full-stack, production-ready donation tracking platform that allows users to donate to fundraising campaigns and view live statistics — no login or signup required.
+A full-stack donation tracking platform that allows users to donate to fundraising campaigns and view live statistics — no login or signup required.
 
-**Live Demo:** https://donation-tracker-production-17e9.up.railway.app/index.html  
-**Admin Panel:** https://donation-tracker-production-17e9.up.railway.app/admin.html
+**Live Demo:** [donation-tracker-yvgf.onrender.com](https://donation-tracker-yvgf.onrender.com/index.html)  
+**Admin Panel:** [donation-tracker-yvgf.onrender.com/admin.html](https://donation-tracker-yvgf.onrender.com/admin.html)
+
+> Hosted on free tiers, so the first load after a period of inactivity can take up to a minute while the server wakes up.
 
 ---
 
@@ -13,8 +15,9 @@ A full-stack, production-ready donation tracking platform that allows users to d
 |---|---|
 | Frontend | HTML5, CSS3, Vanilla JavaScript |
 | Backend | Node.js + Express.js |
-| Database | MySQL |
-| Hosting | Railway |
+| Database | MySQL (mysql2 driver, connection pool) |
+| App hosting | Render (free tier) |
+| Database hosting | Aiven for MySQL (free plan) |
 
 ---
 
@@ -89,16 +92,17 @@ INSERT INTO campaigns (id, name, description, goal_amount) VALUES
 ```
 
 ### 4. Configure database connection
-Update `backend/db.js` with your local MySQL credentials:
-```javascript
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'your_password',
-  database: process.env.DB_NAME || 'donation_tracker',
-  port: process.env.DB_PORT || 3306,
-});
+The app reads one connection URL from the `DATABASE_URL` environment variable (see `backend/db.js`):
+
+```bash
+# macOS / Linux
+export DATABASE_URL="mysql://root:your_password@localhost:3306/donation_tracker"
+
+# Windows PowerShell
+$env:DATABASE_URL = "mysql://root:your_password@localhost:3306/donation_tracker"
 ```
+
+Hosted databases such as Aiven require SSL, which `db.js` enables by default. For a local MySQL server without SSL, also set `DB_SSL=false`.
 
 ### 5. Start the server
 ```bash
@@ -171,7 +175,7 @@ When multiple users donate simultaneously, race conditions are prevented using d
 4. The campaign total is updated atomically using `total_raised = total_raised + ?`
 5. The transaction is committed — or fully rolled back on any error
 
-This ensures donation totals remain accurate even under high concurrent load.
+This keeps donation totals accurate when requests arrive concurrently.
 
 ---
 
@@ -181,7 +185,8 @@ This ensures donation totals remain accurate even under high concurrent load.
 - Admin panel shows full unmasked details for monitoring purposes
 - All database queries use **parameterized statements** to prevent SQL injection
 - Input validation runs on both the client side and server side
-- Environment variables used for all sensitive database credentials
+- Database credentials are kept in environment variables, not in the repository
+- The admin panel has no login, so this is a demo and not meant for real donor data
 
 ---
 
@@ -201,20 +206,21 @@ MySQL Database (Connection Pool)
 
 ---
 
-## 📦 Environment Variables (Production)
+## 📦 Environment Variables
 
 | Variable | Description |
 |---|---|
-| `DATABASE_URL` | Full MySQL connection URL |
-| `PORT` | Server port (set automatically by Railway) |
+| `DATABASE_URL` | Full MySQL connection URL, e.g. `mysql://user:password@host:port/database` |
+| `DB_SSL` | Set to `false` only for a local MySQL server without SSL |
+| `PORT` | Server port (set automatically by Render; defaults to 3000 locally) |
 
 ---
 
 ## 🌐 Deployment
 
-This project is deployed on **Railway** with a managed MySQL database.
+This project is deployed on **Render** (free web service) with a managed MySQL database on **Aiven** (free plan).
 
 - Backend and frontend are served together from the same Express server
 - Static frontend files are served via `express.static`
-- Database hosted on Railway's managed MySQL service
+- `DATABASE_URL` is set in Render's environment settings and is never committed to the repository
 - Auto-deploys on every push to the `main` branch via GitHub integration
